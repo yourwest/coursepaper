@@ -31,34 +31,33 @@ k = 0
 i = 0
 insertion = u''
 deletion = u''
-existence = False
 
-sentences1 = re.split(u'(\.|!|\?)', text1.read())
-sentences2 = re.split(u'(\.|!|\?)', text2.read())
+sentences1 = re.split(u'\.|!|\?', text1.read())
+sentences2 = re.split(u'\.|!|\?', text2.read())
 
 #sentences1 = text1.read().replace(u'!', u'.').replace(u'?', u'.').split(u'.')
 #sentences2 = text2.read().replace(u'!', u'.').replace(u'?', u'.').split(u'.')
 
-while i < len(sentences1) and k < len(sentences2) - 1:
+while i < len(sentences1):
 
-    if distance(sentences1[i], sentences2[k]) >= 50:
+    #if distance(sentences1[i], sentences2[k]) >= 50:
 
-        for l in sentences2:
-            if distance(sentences1[i], l) <= 50:
-                changes[i] = [u'перестановка', sentences1[i], sentences2.index(l)]
-                g = 1
-                break
-            else:
-                changes[i] = [u'удаление', sentences1[i]]
-
-        for l in sentences1:
-            if distance(sentences2[k], l) <= 50:
-                existence = True
-
-        if existence is False:
-            changes[str(k) + u'вставка'] = [sentences2[k], k]
-
+    for l in sentences2:
+        if distance(sentences1[i], l) <= 50:
+            changes[i] = [sentences1[i], sentences2.index(l)]
+            break
+        else:
+            changes[i] = [u'удаление', sentences1[i]]
     i += 1
+
+while k < len(sentences2):
+    existence = False
+    for l in sentences1:
+        if distance(sentences2[k], l) <= 50:
+            existence = True
+
+    if existence is False:
+        changes[str(k) + u'вставка'] = [sentences2[k], k]
     k += 1
 
 changesJson = json.dumps(changes, ensure_ascii=False, indent=2)
