@@ -18,7 +18,10 @@ def distance(a, b):
             if a[j-1] != b[i-1]:
                 change += 1
             current_row[j] = min(add, delete, change)
-    value = current_row[n] / float(len(a)) * 100
+    try:
+        value = current_row[n] / float(len(a)) * 100
+    except:
+        value = 100
 
     return value
 
@@ -45,6 +48,18 @@ while i < len(sentences1):
     for l in sentences2:
         if distance(sentences1[i], l) <= 50:
             changes[i] = [sentences1[i], sentences2.index(l)]
+
+            words1 = sentences1[i].split()
+            words2 = l.split()
+
+            for word in words1:
+                if word not in words2:
+                    changes[word] = [u'удаление']
+
+            for word in words2:
+                if word not in words1:
+                    changes[word] = [u'вставка']
+
             break
         else:
             changes[i] = [u'удаление', sentences1[i]]
@@ -69,3 +84,4 @@ diff.write(changesJson)
 text1.close()
 text2.close()
 diff.close()
+
